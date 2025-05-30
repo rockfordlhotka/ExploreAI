@@ -53,12 +53,6 @@
 - ✅ OllamaEmbeddingService implemented and refactored for correct API usage (`GenerateAsync`).
 - ✅ Local documentation for OllamaSharp and Microsoft.Extensions.AI created.
 - ✅ Build and embedding pipeline issues resolved.
-- ⏳ CLI integration and chat REPL pending.
-- ⏳ Final CLI usability, error handling, and high-value integration tests pending.
-
-## Next Steps
-
-- Integrate all services into Spectre.Console CLI commands for ingestion and chat.
-- Implement chat REPL that retrieves context from the vector DB and uses Ollama for responses.
-- Add and run high-value unit and integration tests for the full pipeline.
-- Finalize CLI usability, error handling, and documentation polish.
+- ✅ CLI integration and chat REPL pending.
+- ⏳ Migrate from using Spectre for the REPL chat to implementing a chat service that implements IChatClient from Microsoft.Extensions.AI
+- ⏳ Use Final CLI usability, error handling, and high-value integration tests pending.

@@ -15,13 +15,11 @@ namespace ExploreAi
             var client = new OllamaApiClient(new Uri(baseUrl), model);
             _embeddingGen = client;
         }
-
         public async Task<float[]> GetEmbeddingAsync(string text)
         {
-            // The IEmbeddingGenerator interface exposes GenerateAsync, not GenerateEmbeddingAsync
-            var result = await _embeddingGen.GenerateAsync(new[] { text }, null, System.Threading.CancellationToken.None);
-            // Try to enumerate the result directly
-            var embedding = result.FirstOrDefault();
+            // GenerateAsync returns Task<GeneratedEmbeddings<Embedding<float>>>
+            var results = await _embeddingGen.GenerateAsync(new[] { text }, null, System.Threading.CancellationToken.None);
+            var embedding = results.FirstOrDefault();
             if (embedding == null)
                 throw new InvalidOperationException("No embedding returned from OllamaSharp.");
             return embedding.Vector.ToArray();
