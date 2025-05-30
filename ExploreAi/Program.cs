@@ -103,10 +103,39 @@ namespace ExploreAi.Cli
                     continue;
                 }
 
+                // Format the output: show doc name/score, then a compact preview (no leading blank lines, collapse >2 blank lines, trim trailing blank lines)
                 AnsiConsole.MarkupLine($"[green]Most relevant document:[/] [grey]{best.FileName}[/] (score: {best.Score:F3})");
-                AnsiConsole.WriteLine(best.TextContent.Length > 500 ? best.TextContent.Substring(0, 500) + "..." : best.TextContent);
+                var cleaned = CleanText(best.TextContent);
+                // Remove leading/trailing blank lines and collapse 2+ blank lines to 1
+                cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"^(\s*\n)+", "");
+                cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"(\n\s*){3,}", "\n\n");
+                cleaned = cleaned.TrimEnd();
+                // Show only the first 12 lines or 500 chars, whichever is shorter
+                var lines = cleaned.Split('\n');
+                string preview;
+                if (lines.Length > 12)
+                    preview = string.Join("\n", lines.Take(12)) + "\n...";
+                else if (cleaned.Length > 500)
+                    preview = cleaned.Substring(0, 500) + "...";
+                else
+                    preview = cleaned;
+                AnsiConsole.WriteLine(preview);
             }
             return 0;
+        }
+
+        // Helper to clean up excessive whitespace and decode HTML entities
+        private static string CleanText(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return string.Empty;
+            // Decode HTML entities
+            var decoded = System.Net.WebUtility.HtmlDecode(input);
+            // Replace 3+ newlines with 2, and 2+ with 1
+            var normalized = System.Text.RegularExpressions.Regex.Replace(decoded, "\n{3,}", "\n\n");
+            normalized = System.Text.RegularExpressions.Regex.Replace(normalized, "\n{2,}", "\n");
+            // Remove leading/trailing whitespace and excessive spaces
+            normalized = normalized.Trim();
+            return normalized;
         }
 
         // Cosine similarity helper
