@@ -14,6 +14,20 @@ A .NET 8.0 command-line tool for ingesting HTML files, generating vector embeddi
 
 - .NET 8.0 SDK or later
 - [Ollama](https://ollama.com/) running locally (default: `http://localhost:11434`)
+
+## Ollama Setup
+
+Before running ingestion or chat, make sure the Ollama server is running and the required model is pulled:
+
+```pwsh
+# Pull the embedding model (run in PowerShell)
+ollama pull nomic-embed-text
+
+# Start the Ollama server (if not already running)
+ollama serve
+```
+
+You only need to pull the model once. The server must be running whenever you use the CLI.
 - SQLite (no separate install needed; uses Microsoft.Data.Sqlite)
 
 ## Getting Started
