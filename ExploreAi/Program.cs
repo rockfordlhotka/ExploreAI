@@ -94,17 +94,23 @@ namespace ExploreAi.Cli
                 var docs = vectorDb.GetAllDocuments();
                 var best = docs
                     .Select(d => new { d.FileName, d.TextContent, Score = CosineSimilarity(inputEmbedding, d.Embedding) })
-                    .OrderByDescending(x => x.Score)
-                    .FirstOrDefault();
+                    .OrderByDescending(x => x.Score);
 
-                if (best == null)
+                if (best.Count() == 0)
                 {
                     AnsiConsole.MarkupLine("[red]No documents in DB.[/]");
                     continue;
                 }
 
-                AnsiConsole.MarkupLine($"[green]Most relevant document:[/] [grey]{best.FileName}[/] (score: {best.Score:F3})");
-                AnsiConsole.WriteLine(best.TextContent.Length > 500 ? best.TextContent.Substring(0, 500) + "..." : best.TextContent);
+                int count = 0;
+                foreach (var doc in best)
+                {
+                    AnsiConsole.MarkupLine($"[grey]{doc.FileName}[/] (score: {doc.Score:F3})");
+                    count++;
+                    if (count >= 5) break; // Limit to top 5 results
+                }
+                //AnsiConsole.MarkupLine($"[green]Most relevant document:[/] [grey]{best.FileName}[/] (score: {best.Score:F3})");
+                //AnsiConsole.WriteLine(best.TextContent.Length > 500 ? best.TextContent.Substring(0, 500) + "..." : best.TextContent);
             }
             return 0;
         }
