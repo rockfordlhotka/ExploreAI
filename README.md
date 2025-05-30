@@ -28,6 +28,7 @@ ollama serve
 ```
 
 You only need to pull the model once. The server must be running whenever you use the CLI.
+
 - SQLite (no separate install needed; uses Microsoft.Data.Sqlite)
 
 ## Getting Started
