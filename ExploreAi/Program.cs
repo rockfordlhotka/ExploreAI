@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Logging;
 using OllamaSharp;
 // using Microsoft.Extensions.AI.Chat; // Remove: not needed, types are in Microsoft.Extensions.AI
 
@@ -130,14 +131,15 @@ namespace ExploreAi.Cli
 
     // Main CLI setup
     public static class Program
-    {
-        public static int Main(string[] args)
+    {        public static int Main(string[] args)
         {
-            var builder = Host.CreateApplicationBuilder(args);            // Register services
+            var builder = Host.CreateApplicationBuilder(args);
+            
+            // Register services
             builder.Services.AddSingleton<HtmlIngestionService>();
             builder.Services.AddSingleton<OllamaEmbeddingService>();
             builder.Services.AddSingleton<VectorDbService>(sp => new VectorDbService("ExploreAi.db"));
-            builder.Services.AddSingleton<IChatClient>(sp => new OllamaApiClient(new Uri("http://localhost:11434"), "deepseek-r1:8b"));
+            builder.Services.AddSingleton<IChatClient>(sp => new OllamaApiClient(new Uri("http://localhost:11434"), "mistral:7b"));
             builder.Services.AddSingleton<ChatService>();
 
             var app = new CommandApp(new TypeRegistrar(builder.Services));
