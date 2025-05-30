@@ -24,13 +24,17 @@ namespace ExploreAi.Cli
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
         {
+            // Convert input and db paths to absolute paths
+            var inputPath = Path.GetFullPath(settings.Input);
+            var dbPath = Path.GetFullPath(settings.Db);
+
             var htmlService = new HtmlIngestionService();
             var embeddingService = new OllamaEmbeddingService();
-            var vectorDb = new VectorDbService(settings.Db);
+            var vectorDb = new VectorDbService(dbPath);
 
-            AnsiConsole.MarkupLine($"[yellow]Ingesting HTML files from:[/] {settings.Input}");
+            AnsiConsole.MarkupLine($"[yellow]Ingesting HTML files from:[/] {inputPath}");
             int count = 0;
-            foreach (var doc in htmlService.IngestHtmlFiles(settings.Input))
+            foreach (var doc in htmlService.IngestHtmlFiles(inputPath))
             {
                 AnsiConsole.MarkupLine($"[blue]Processing:[/] {doc.FileName}");
                 float[] embedding;
@@ -63,7 +67,9 @@ namespace ExploreAi.Cli
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
         {
-            var vectorDb = new VectorDbService(settings.Db);
+            // Convert db path to absolute path
+            var dbPath = Path.GetFullPath(settings.Db);
+            var vectorDb = new VectorDbService(dbPath);
             var embeddingService = new OllamaEmbeddingService();
 
             AnsiConsole.MarkupLine("[yellow]Chat REPL started. Type 'exit' to quit.[/]");
