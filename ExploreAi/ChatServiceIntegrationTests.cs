@@ -8,7 +8,8 @@ namespace ExploreAi
 {
     [TestClass]
     public class ChatServiceIntegrationTests
-    {        [TestMethod]
+    {
+        [TestMethod]
         public async Task ChatService_CanConnectToOllama()
         {
             // Arrange
@@ -19,18 +20,18 @@ namespace ExploreAi
             try
             {
                 var response = await chatService.GetChatResponseAsync("ping", null, System.Threading.CancellationToken.None);
-                
+
                 // If we get here without exception, the connection worked
                 Assert.IsNotNull(response);
                 Assert.IsTrue(response.Length > 0, "Response should not be empty");
-                
+
                 Console.WriteLine($"Chat response: {response}");
             }
             catch (Exception ex)
             {
                 // Print the exception for debugging
                 Console.WriteLine($"Chat failed with: {ex.Message}");
-                
+
                 // If it's a 404, that means the model wasn't found
                 if (ex.Message.Contains("404"))
                 {

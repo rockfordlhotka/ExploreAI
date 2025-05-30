@@ -13,37 +13,39 @@ try {
     $pinfo.RedirectStandardError = $true
     $pinfo.RedirectStandardInput = $true
     $pinfo.WorkingDirectory = "c:\dev\xebia\ExploreAI"
-    
+
     $process = New-Object System.Diagnostics.Process
     $process.StartInfo = $pinfo
     $process.Start() | Out-Null
-    
+
     # Send input to exit immediately
     $process.StandardInput.WriteLine("exit")
     $process.StandardInput.Close()
-    
+
     # Wait for completion with timeout
     $process.WaitForExit(10000)
-    
+
     $output = $process.StandardOutput.ReadToEnd()
     $errorOutput = $process.StandardError.ReadToEnd()
-    
+
     Write-Host "Output:" -ForegroundColor Green
     Write-Host $output
-    
+
     if ($errorOutput) {
         Write-Host "Error:" -ForegroundColor Red
         Write-Host $errorOutput
     }
-    
+
     Write-Host "Exit Code: $($process.ExitCode)" -ForegroundColor Cyan
-    
+
     if ($process.ExitCode -eq 0) {
         Write-Host "SUCCESS: Chat command completed without errors!" -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Host "WARNING: Chat command exited with code $($process.ExitCode)" -ForegroundColor Yellow
     }
-    
-} catch {
+
+}
+catch {
     Write-Host "ERROR: $($_.Exception.Message)" -ForegroundColor Red
 }
